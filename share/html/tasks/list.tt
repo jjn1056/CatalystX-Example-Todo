@@ -1,0 +1,31 @@
+[% META title = "Your Personal Todo" %]
+
+<section id="todo-main">
+  <header>
+    <h1>My Todo List</h1>
+    <form id="add-new-item" method="POST"
+      action="[% uri_for_action(controller.action_for('add'),
+        {next=>uri_for_action(controller.action_for('list'))}) %]">
+      <input name="new_entry" type="input" autofocus="autofocus"
+        placeholder="What's the next item on the list?"/>
+    </form>
+  </header>  
+  <section id="checklist_items">
+    <ul>[% FOREACH todolist %]
+      <li>
+        <span>[% entry %]</span>
+        [% SET action=uri_for_action(
+          controller('Task').action_for('remove'),
+          [todolist_id],
+          {next=>uri_for_action(controller.action_for('list'))}) %]
+        <form method="POST" action="[% action %]">
+          <button type="submit" name="delete" value="[% todolist_id %]">
+           Delete</button>
+        </form>
+      </li>
+    [% END %]</ul>
+  </section>
+  <footer>
+    Total Items: <span id="item-count">[% todolist.size %]</span>
+  </footer>
+</section>
