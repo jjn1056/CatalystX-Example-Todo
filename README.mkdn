@@ -1,0 +1,25 @@
+# NAME
+
+CatalystX::Example::Todo - Example TODO application
+
+# DESCRIPTION
+
+This is a sample application designed to demo [Catalyst](http://search.cpan.org/perldoc?Catalyst), [DBIx::Class](http://search.cpan.org/perldoc?DBIx::Class) and
+related software.  It is designed for learning.
+
+# SEE ALSO
+
+The following modules or resources may be of interest.
+
+[DBIx::Class](http://search.cpan.org/perldoc?DBIx::Class), [Catalyst::Runtime](http://search.cpan.org/perldoc?Catalyst::Runtime), [Test::Most](http://search.cpan.org/perldoc?Test::Most)
+
+# AUTHOR
+
+    John Napiorkowski C<< <jjnapiork@cpan.org> >>
+
+# COPYRIGHT & LICENSE
+
+    Copyright 2013, John Napiorkowski C<< <jjnapiork@cpan.org> >>
+
+This program is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
