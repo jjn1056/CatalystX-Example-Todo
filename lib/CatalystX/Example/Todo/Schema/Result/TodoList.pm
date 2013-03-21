@@ -5,7 +5,7 @@ use CatalystX::Example::Todo::Schema::Candy;
 table 'todolist';
 
 primary_column todolist_id => {
-  data_type => "integer",
+  data_type => 'integer',
   is_auto_increment => 1};
 
 column entry => {

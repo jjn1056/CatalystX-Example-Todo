@@ -1,16 +1,15 @@
 package CatalystX::Example::Todo::Web::Model::FormNewEntry;
 
 use Moose;
-extends 'Catalyst::Model::Factory::PerRequest';
+use CatalystX::Example::Todo::Web::NewTodoForm;
 
-around 'prepare_arguments', sub {
-  my ($orig, $self, $ctx, $arg) = @_;
-  my %extra = (
-    item => $ctx->model('Schema::TodoList')
-      ->new_result({status=>'open'}));
+with 'Catalyst::Component::InstancePerContext';
+ 
+sub build_per_context_instance {
+    my ($self, $ctx) = @_;
+    return CatalystX::Example::Todo::Web::NewTodoForm
+      ->new( item => $ctx->model('Schema::TodoList')
+        ->new_result({status=>'open'}))
+}
 
-  return $self->$orig($ctx, { %$arg, %extra });
-};
 
-__PACKAGE__->config(
-  class => 'CatalystX::Example::Todo::Web::NewTodoForm' );
