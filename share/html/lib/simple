@@ -1,1 +1,8 @@
-[% PROCESS $template %]
+[% BLOCK head;
+  PROCESS "$template.name/head";
+ END %]
+
+[% BLOCK body;
+  PROCESS $template;
+ END %]
+

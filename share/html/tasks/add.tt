@@ -1,0 +1,20 @@
+[% META title = "Error with New Entry" %]
+
+<section id="todo-main">
+  <header>
+    <h1>Fix Your Errors</h1>
+    [% form.render %]
+    <form id="add-new-item" method="POST"
+      action="[% uri_for_action(controller.action_for('add')) %]">
+      <input name="entry" type="input" value="[% entry %]" autofocus="autofocus"
+        placeholder="What's the next item on the list?"/>
+       <span class="help-inline">[% errors.0 %]</span>
+    </form>
+  </header>  
+</section>
+
+[% BLOCK head %]
+[% END %]
+
+
+

@@ -2,21 +2,24 @@ package CatalystX::Example::Todo::Web::Controller::Task;
  
 use Moose;
 use MooseX::MethodAttributes;
-use CatalystX::Syntax::Action;
+use Catalyst::ResponseHelpers;
+no warnings::illegalproto;
 
 extends 'CatalystX::Example::Todo::Web::Controller';
 
-action start($task_id) : Chained('/start')
- PathPrefix CaptureArgs(1) {
-  $ctx->stash(current_model_instance
-    => $ctx->model->find($task_id));
+sub start(Model::Todo)
+ : Chained('/start') PathPrefix CaptureArgs(1)
+{
+  my ($self, $todo) = @_;
+  NotFound unless $todo;
  }
 
-  action remove : Chained('start')
-   PathPart('') Args(0) Method('POST') {
-    $ctx->model->delete;
-    $ctx->res->redirect($ctx->req->query_parameters->{next});
+  sub remove(Model::Todo, Controller::Tasks)
+   : Chained('start') POST PathPart('') Args(0)
+  {
+    my ($self, $todo, $tasks_cntrl) = @_;
+    $todo->delete;
+    SeeOther UriOf($tasks_cntrl->action_for('list'));
   }
 
- 
 __PACKAGE__->meta->make_immutable;

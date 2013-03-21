@@ -2,26 +2,33 @@ package CatalystX::Example::Todo::Web::Controller::Tasks;
  
 use Moose;
 use MooseX::MethodAttributes;
-use CatalystX::Syntax::Action;
+use Catalyst::ResponseHelpers;
+no warnings::illegalproto;
 
 extends 'CatalystX::Example::Todo::Web::Controller';
 
-action start : Chained('/start')
- PathPrefix CaptureArgs(0) { 
-  $ctx->stash(current_model => 'Schema::TodoList');
-}
+sub start : Chained('/start')
+ PathPrefix CaptureArgs(0) { }
 
-  action list :Chained('start')
-   PathPart('') Args(0) Method('GET') {
-    $ctx->stash(todolist=>[$ctx->model->hri->all]);
+  sub list(Model::Schema::TodoList)
+   : Chained('start') GET PathPart('') Args(0)
+  {
+    my ($self, $todolist) = @_;
+    Ok html {form => todolist => [$todolist->hri->all]};
   }
 
-  action add :Chained('start')
-   PathPart('') Args(0) Method('POST') {
-    $ctx->model->create({
-      entry=>$ctx->req->body_parameters->{new_entry},
-      status=>'open'});
-    $ctx->res->redirect($ctx->req->query_parameters->{next});
-   }
+  sub add(bparams, Model::FormNewEntry)
+   : Chained('start') POST PathPart('') Args(0)
+  {
+    my ($self, $params, $form) = @_;
+    my $result = $form->run($params);
+
+    if($result->validated) {
+      SeeOther UriOf $self->action_for('list');
+    } else {
+      Ok html {entry => $result->value->{entry},
+        errors => $result->errors};
+    }
+  }
 
 __PACKAGE__->meta->make_immutable;
