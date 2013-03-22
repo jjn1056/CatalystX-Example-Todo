@@ -29,11 +29,11 @@ sub NotFound(;@) {
 }
 
 sub NotAcceptable(;@) {
-  my @next = @_;
+  my $body_cb = shift;
   response_helper {
     my ($action, $controller, $ctx) = @_;
     $ctx->res->status(406);
-    $ctx->res->body(shift @next);
+    $ctx->res->body($body_cb->($action, $controller, $ctx));
   };
 }
 
@@ -54,7 +54,14 @@ sub UriOf($) {
   };
 }
 
-sub json($) { encode_json(shift) } 
+sub json($) {
+  my $template_vars = shift;
+  response_helper {
+    my ($action, $controller, $ctx) = @_;
+    $ctx->res->content_type('application/json');
+    encode_json($template_vars);
+  };
+}
 
 sub html($) {
   my $template_vars = shift;

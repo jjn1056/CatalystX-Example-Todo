@@ -22,8 +22,11 @@ requires 'execute';
 
   sub parse {
     my ($class, $request) = @_;
-    my $method = $class->map($request->content_type);
-    return $class->$method($request->env->{'psgi.input'});
+    if(my $method = $class->map($request->content_type)) {
+      return $class->$method($request->env->{'psgi.input'});
+    } else {
+      die "Can't map method for ${\$request->content_type}";
+    }
   }
 
   sub _memory_slurp {
@@ -46,8 +49,7 @@ requires 'execute';
 }
 
 sub body_parser {
-  return our $body_parser ||= 
-    do { ${shift->attributes->{BodyParser}||[]}[0] };
+  ${shift->attributes->{BodyParser}||[]}[0];
 }
 
 around 'execute', sub {

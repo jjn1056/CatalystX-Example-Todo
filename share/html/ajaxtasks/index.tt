@@ -1,0 +1,67 @@
+[% META title = "Your Todo List" %]
+
+<section ng-controller="TodoListCtrl">
+  <header>
+    <h1>Things Todo</h1>
+  </header>  
+  <section>
+    <ul>
+      <li ng-repeat="todo in todolist">
+      <span ng-bind="todo.entry"></span>
+        <button name="delete-index" ng-click="delete(todo.todolist_id)">
+          Delete</button>
+      </li>
+    </ul>
+  </section>
+  <section>
+    <form id="add-entry" method="POST action="" ng-submit="add()">
+      <div class="control-group" ng-class="new_item_error_class">
+        <input id="entry" class="input-xxlarge" type="input" autofocus="autofocus"
+          autocomplete="off" ng-model="entry" placeholder="What's the next thing todo?"/>
+        <span class="help-inline" ng-bind="new_item_error"></span>
+      </div>
+    </form>
+  </section>
+  <footer>
+    Total Items: <span id="item-count" ng-bind="todolist.length"></span>
+  </footer>
+</section>
+
+[% BLOCK head;
+  SET api_uri = uri_for_action(controller('API').action_for('todolist')) %]
+<script>
+  function TodoListCtrl($scope, $http) {
+
+    $scope.init = function() {
+      $http.get('[% api_uri %]')
+      .success(function(data) {
+        $scope.todolist = data.todolist;
+      });
+    };
+
+    $scope.add = function() {
+      $http.post('[% api_uri %]', {'entry':this.entry})
+        .success(function(data) {
+          $scope.todolist.push(data.entry);
+          $scope.entry = '';
+          $scope.new_item_error = '';
+          $scope.new_item_error_class = '';
+        })
+        .error(function(data, status) {
+          $scope.new_item_error = data.errors[0];
+          $scope.new_item_error_class = 'error';
+        });
+    };
+
+    $scope.delete = function(id) {
+      $http.delete('[% api_uri %]/' + id)
+        .success(function(data) {
+          $scope.init();
+        });
+    };
+
+    $scope.init();
+
+  }
+</script>
+[% END %]

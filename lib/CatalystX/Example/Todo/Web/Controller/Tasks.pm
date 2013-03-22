@@ -17,7 +17,7 @@ sub start : Chained('/start')
     Ok html {todolist => [$todolist->hri->all]};
   }
 
-  sub add(bparams, Model::FormNewEntry)
+  sub add(bparams, Model::FormNewEntry<Model::Schema::TodoList>)
    : Chained('start') POST PathPart('') Args(0)
   {
     my ($self, $params, $form) = @_;

@@ -6,10 +6,10 @@ use CatalystX::Example::Todo::Web::NewTodoForm;
 with 'Catalyst::Component::InstancePerContext';
  
 sub build_per_context_instance {
-    my ($self, $ctx) = @_;
+    my ($self, $ctx, $todolist) = @_;
     return CatalystX::Example::Todo::Web::NewTodoForm
-      ->new( item => $ctx->model('Schema::TodoList')
-        ->new_result({status=>'open'}))
+      ->new( item => $todolist
+        ->new_result({status=>'open'}));
 }
 
 
