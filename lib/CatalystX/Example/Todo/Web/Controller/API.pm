@@ -8,19 +8,17 @@ no warnings::illegalproto;
 extends 'CatalystX::Example::Todo::Web::Controller';
 
 sub start : ChainedParent
- PathPrefix CaptureArgs(0)
-{
-  my ($self, $ctx) = @_;
-}
+ PathPrefix CaptureArgs(0) { }
 
-  sub todolist(Model::Schema::TodoList) : GET Chained('start') Args(0)
+  sub todolist(Model::Schema::TodoList)
+   : GET Chained('start') Args(0)
   {
     my ($self, $todolist) = @_;
     Ok json {todolist => [$todolist->hri->all]};
   }
 
-  sub add(bparams, Model::FormNewEntry<Model::Schema::TodoList>) : Chained('start')
-    POST PathPart('todolist') BodyParser('Any') Args(0)
+  sub add(bparams, Model::FormNewEntry<Model::Schema::TodoList>)
+   : Chained('start') POST PathPart('todolist') BodyParser('Any') Args(0)
   {
     my ($self, $params, $form) = @_;
     my $result = $form->run($params);
@@ -32,13 +30,13 @@ sub start : ChainedParent
     }
   }
 
-  sub delete(Model::Todo<Model::Schema::TodoList,Arg0> Controller::Tasks) : Chained('start')
-    DELETE PathPart('todolist') Args(1)
+  sub delete(Model::Todo<Model::Schema::TodoList,Arg0> Controller::Tasks)
+   : Chained('start') DELETE PathPart('todolist') Args(1)
   {
     my ($self, $todo, $tasks_cntrl) = @_;
-    NotFound unless $todo;
-    $todo->delete;
-    SeeOther UriOf $tasks_cntrl->action_for('list');
+    $todo ?
+      do { $todo->delete; SeeOther UriOf $tasks_cntrl->action_for('list') }
+        : NotFound;
   }
 
 __PACKAGE__->meta->make_immutable;
