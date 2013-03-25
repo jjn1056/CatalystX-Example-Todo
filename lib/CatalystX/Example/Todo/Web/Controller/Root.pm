@@ -10,11 +10,10 @@ extends 'CatalystX::Example::Todo::Web::Controller';
 sub start : Chained('/')
  PathPrefix CaptureArgs(0) { }
 
-  sub root(Controller::Tasks) : Chained('start')
+  sub root : Chained('start')
    PathPart('') Args(0)
   {
-    my ($self, $tasks_cntrl) = @_;
-    SeeOther UriOf $tasks_cntrl->action_for('list');
+    SeeOther UriOf 'tasks/list';
   }
 
 __PACKAGE__->meta->make_immutable;

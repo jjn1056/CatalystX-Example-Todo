@@ -14,7 +14,7 @@ sub start : ChainedParent
    : GET Chained('start') Args(0)
   {
     my ($self, $todolist) = @_;
-    Ok json {todolist => [$todolist->hri->all]};
+    Ok json +{todolist => [$todolist->hri->all]};
   }
 
   sub add(bparams, Model::FormNewEntry<Model::Schema::TodoList>)
@@ -24,19 +24,22 @@ sub start : ChainedParent
     my $result = $form->run($params);
 
     if($result->validated) {
-      Ok json { entry => {$result->form->item->get_columns} };
+      Ok json +{entry => {$result->form->item->get_columns}};
     } else {
       NotAcceptable json {errors => $result->errors}
     }
   }
 
-  sub delete(Model::Todo<Model::Schema::TodoList,Arg0> Controller::Tasks)
+  sub delete(Model::Todo<Model::Schema::TodoList,Arg0>)
    : Chained('start') DELETE PathPart('todolist') Args(1)
   {
-    my ($self, $todo, $tasks_cntrl) = @_;
-    $todo ?
-      do { $todo->delete; SeeOther UriOf $tasks_cntrl->action_for('list') }
-        : NotFound;
+    my ($self, $todo) = @_;
+    if($todo) {
+      $todo->delete;
+      return SeeOther UriOf 'tasks/list';
+    } else {
+      return NotFound;
+    }
   }
 
 __PACKAGE__->meta->make_immutable;

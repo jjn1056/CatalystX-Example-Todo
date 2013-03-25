@@ -9,10 +9,9 @@ extends 'CatalystX::Example::Todo::Web::Controller';
 
 sub start : ChainedParent PathPrefix CaptureArgs(0) { }
 
-  sub index(Controller::API) : Chained('start')
+  sub index : Chained('start')
    PathPart('') Args(0)
   {
-    my ($self, $cntrl) = @_;
     Ok html { };
   }
 

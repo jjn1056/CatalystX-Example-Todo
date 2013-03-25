@@ -24,7 +24,7 @@ sub start : Chained('/start')
     my $result = $form->run($params);
 
     if($result->validated) {
-      SeeOther UriOf $self->action_for('list');
+      SeeOther UriOf 'tasks/list';
     } else {
       Ok html {entry => $result->value->{entry},
         errors => $result->errors};

@@ -7,11 +7,12 @@
   <section id="checklist_items">
     <ul>[% FOREACH todolist %]
       <li>
-        <span>[% entry %]</span>
+        <span style="font-color:[% status == 'open' ? 'black':'gray' %]">[% entry %]</span>
         [% SET action=uri_for_action(
-          controller('Task').action_for('remove'),
-          [todolist_id]) %]
+          '/task/remove', [todolist_id]) %]
         <form method="POST" action="[% action %]" style="display:inline">
+          <button type="submit" name="close" value="[% todolist_id %]">
+           Close</button>
           <button type="submit" name="delete" value="[% todolist_id %]">
            Delete</button>
         </form>
@@ -20,7 +21,7 @@
   </section>
   <section>
     <form id="add-new-item" method="POST"
-      action="[% uri_for_action(controller.action_for('add')) %]">
+      action="[% uri_for_action('tasks/add') %]">
       <div class="control-group">
         <input name="entry" id="entry" class="input-xxlarge" type="input"
           autofocus="autofocus" placeholder="What's the next thing todo?"/>

@@ -14,12 +14,12 @@ sub start(Model::Todo<Model::Schema::TodoList,Arg0>)
   NotFound unless $todo;
  }
 
-  sub remove(Model::Todo, Controller::Tasks)
+  sub remove(Model::Todo)
    : Chained('start') POST PathPart('') Args(0)
   {
     my ($self, $todo, $tasks_cntrl) = @_;
     $todo->delete;
-    SeeOther UriOf $tasks_cntrl->action_for('list');
+    SeeOther UriOf 'tasks/list';
   }
 
 __PACKAGE__->meta->make_immutable;
