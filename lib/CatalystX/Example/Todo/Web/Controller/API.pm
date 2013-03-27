@@ -23,6 +23,10 @@ sub start : ChainedParent
     my ($self, $params, $form) = @_;
     my $result = $form->run($params);
 
+    use Devel::Dwarn;
+    Dwarn $result->form->value;
+    Dwarn $result;
+
     if($result->validated) {
       Ok json +{entry => {$result->form->item->get_columns}};
     } else {

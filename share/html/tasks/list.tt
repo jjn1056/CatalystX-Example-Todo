@@ -8,9 +8,8 @@
     <ul>[% FOREACH todolist %]
       <li>
         <span style="font-color:[% status == 'open' ? 'black':'gray' %]">[% entry %]</span>
-        [% SET action=uri_for_action(
-          '/task/remove', [todolist_id]) %]
-        <form method="POST" action="[% action %]" style="display:inline">
+        <form method="POST" style="display:inline"
+          action="[% uri_for_action(remove_action, [todolist_id]) %]">
           <button type="submit" name="close" value="[% todolist_id %]">
            Close</button>
           <button type="submit" name="delete" value="[% todolist_id %]">
@@ -21,7 +20,7 @@
   </section>
   <section>
     <form id="add-new-item" method="POST"
-      action="[% uri_for_action('tasks/add') %]">
+      action="[% uri_for_action(add_action) %]">
       <div class="control-group">
         <input name="entry" id="entry" class="input-xxlarge" type="input"
           autofocus="autofocus" placeholder="What's the next thing todo?"/>

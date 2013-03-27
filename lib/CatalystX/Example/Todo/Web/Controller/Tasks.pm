@@ -10,11 +10,11 @@ extends 'CatalystX::Example::Todo::Web::Controller';
 sub start : Chained('/start')
  PathPrefix CaptureArgs(0) { }
 
-  sub list(Model::Schema::TodoList)
+  sub list(Model::TodoListViewBuilder<Model::Schema::TodoList>)
    : Chained('start') GET PathPart('') Args(0)
   {
     my ($self, $todolist) = @_;
-    Ok html {todolist => [$todolist->hri->all]};
+    Ok html {todolist => $todolist, add_action => 'tasks/add'};
   }
 
   sub add(bparams, Model::FormNewEntry<Model::Schema::TodoList>)

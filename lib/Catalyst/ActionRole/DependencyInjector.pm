@@ -27,7 +27,9 @@ sub _parse_dependencies {
         ($model) = ($model =~ /^(.+?)</);
       }
 
-      push @dependencies, $ctx->model($model, @inner_deps);
+      my ($ret, @rest) = $ctx->model($model, @inner_deps);
+      warn "$model returns more than one arg" if @rest;
+      push @dependencies, $ret;
     }
     if(my $controller = ($what =~/^Controller\:\:(.+)$/)[0]) {
       push @dependencies, $ctx->controller($controller);
