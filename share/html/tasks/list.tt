@@ -7,7 +7,7 @@
   <section id="checklist_items">
     <ul>[% FOREACH todolist %]
       <li>
-        <span style="font-color:[% status == 'open' ? 'black':'gray' %]">[% entry %]</span>
+        <span style="font-color:[% is_open ? 'black':'gray' %]">[% entry %]</span>
         <form method="POST" style="display:inline"
           action="[% uri_for_action(remove_action, [todolist_id]) %]">
           <button type="submit" name="close" value="[% todolist_id %]">

@@ -14,7 +14,7 @@
     </ul>
   </section>
   <section>
-    <form id="add-entry" method="POST  ng-submit="add()">
+    <form id="add-entry" method="POST"  ng-submit="add()">
       <div class="control-group" ng-class="new_item_error_class">
         <input id="entry" class="input-xxlarge" type="input" autofocus="autofocus"
           autocomplete="off" ng-model="entry" placeholder="What's the next thing todo?"/>

@@ -14,7 +14,7 @@ sub start : Chained('/start')
    : Chained('start') GET PathPart('') Args(0)
   {
     my ($self, $todolist) = @_;
-    Ok html {todolist => $todolist, add_action => 'tasks/add'};
+    Ok html +{todolist => $todolist, add_action => 'tasks/add'};
   }
 
   sub add(bparams, Model::FormNewEntry<Model::Schema::TodoList>)
@@ -26,7 +26,7 @@ sub start : Chained('/start')
     if($result->validated) {
       SeeOther UriOf 'tasks/list';
     } else {
-      Ok html {entry => $result->value->{entry},
+      Ok html +{entry => $result->value->{entry},
         errors => $result->errors};
     }
   }
