@@ -4,7 +4,7 @@ use Moose;
 extends 'Catalyst::Controller';
 
 __PACKAGE__->config(
-  action_roles => ['DependencyInjector', 'BodyParser', 'ProcessHelper'],
+  action_roles => ['DependencyInjector', 'BodyParser', 'ContentNegotiation','ProcessHelper'],
 );
 
 __PACKAGE__->meta->make_immutable;

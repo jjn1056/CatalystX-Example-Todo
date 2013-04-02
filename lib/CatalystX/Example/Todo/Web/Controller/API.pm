@@ -7,8 +7,8 @@ no warnings::illegalproto;
 
 extends 'CatalystX::Example::Todo::Web::Controller';
 
-sub start : ChainedParent
- PathPrefix CaptureArgs(0) { }
+sub start : Consumes(JSON) Provides(JSON)
+  ChainedParent PathPrefix CaptureArgs(0) { }
 
   sub todolist(Model::TodoListViewBuilder<Model::Schema::TodoList>)
    : GET Chained('start') Args(0)
