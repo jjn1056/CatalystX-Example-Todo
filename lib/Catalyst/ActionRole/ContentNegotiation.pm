@@ -19,10 +19,8 @@ package Catalyst::ActionRole::ContentNegotiation;
 
     return @matches ? 1:0;
   }
-
-  1;
-
 }
+
 use Moose::Role;
 use Plack::MIME;
 
