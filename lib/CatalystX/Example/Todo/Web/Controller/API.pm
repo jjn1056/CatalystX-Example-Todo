@@ -7,8 +7,8 @@ no warnings::illegalproto;
 
 extends 'CatalystX::Example::Todo::Web::Controller';
 
-sub start : Consumes(JSON) Provides(JSON)
-  ChainedParent PathPrefix CaptureArgs(0) { }
+sub start : ChainedParent Provides(JSON)
+   PathPrefix CaptureArgs(0) { }
 
   sub todolist(Model::TodoListViewBuilder<Model::Schema::TodoList>)
    : GET Chained('start') Args(0)
@@ -18,14 +18,11 @@ sub start : Consumes(JSON) Provides(JSON)
   }
 
   sub add(bparams, Model::FormNewEntry<Model::Schema::TodoList>)
-   : Chained('start') POST PathPart('todolist') BodyParser('Any') Args(0)
+   : Chained('start') POST PathPart('todolist') Args(0)
+     Consumes(JSON) BodyParser('Any')
   {
     my ($self, $params, $form) = @_;
     my $result = $form->run($params);
-
-    use Devel::Dwarn;
-    Dwarn $result->form->value;
-    Dwarn $result;
 
     if($result->validated) {
       Ok json +{entry => {$result->form->item->get_columns}};

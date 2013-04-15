@@ -1,5 +1,28 @@
 package Catalyst::ActionRole::ContentNegotiation;
 
+{
+  package Catalyst::Request;
+
+  use HTTP::Headers::Util qw(split_header_words);
+
+  sub acceptable_types { map { $_->[0] } split_header_words(shift->header('Accept')) }
+
+  sub accepts {
+
+    ## Given a array of content types, is there at least one acceptable
+    ## match in the client HTTP-Accept header? Used to determine if the
+    ## server can Provide what a client is asking for. Returns boolean
+    
+    my ($self, @provided) = @_;
+    my @accepts = $self->acceptable_types;
+    my @matches = grep { my $outer = $_; grep { $_ == $outer } @provided } @accepts;
+
+    return @matches ? 1:0;
+  }
+
+  1;
+
+}
 use Moose::Role;
 use Plack::MIME;
 
@@ -27,6 +50,12 @@ sub _looks_like_a_mimetype {
 around ['match','match_captures'] => sub {
   my ($orig, $self, $ctx, @args) = @_;
 
+  ## Do I provide what you are willing to accept?
+  if(my $spec = $self->_spec_from_attr('Provides')) {
+    my $type = $self->_mimetype_from_spec($spec);
+    return 0 unless $ctx->req->accepts($type);
+  }
+
   ## Can I consume what you are giving me?
   if(my $spec = $self->_spec_from_attr('Consumes')) {
     my $mimetype = $self->_mimetype_from_spec($spec);
@@ -35,14 +64,6 @@ around ['match','match_captures'] => sub {
     }
   }
   
-  ## Do I provide what you are willing to accept?
-  if(my $spec = $self->_spec_from_attr('Provides')) {
-    my $mimetype = $self->_mimetype_from_spec($spec);
-    if(my $accept = $ctx->req->header('Accept')) {
-      return 0 unless $self->does_provide($mimetype, $accept);
-    }
-  }
-
   $self->$orig($ctx, @args);
 };
 
@@ -50,13 +71,6 @@ sub does_consume {
   my ($self, $mimetype, $request_content_type) = @_;
   return ($mimetype =~/$request_content_type/i);
 }
-
-sub does_provide {
-  my ($self, $mimetype, $acceptable_mimetypes) = @_;
-  return ($mimetype =~/$acceptable_mimetypes/i);
-}
-
-
 
 1;
 
